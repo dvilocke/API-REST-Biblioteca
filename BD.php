@@ -2,6 +2,7 @@
 
 /**
  * database implementation
+ * Ing Miguel Echeverry
  */
 
 const DNS = 'mysql:host=localhost;dbname=bdbiblioteca';
@@ -25,6 +26,11 @@ class BD
             die();
         }
 
+    }
+
+    public function executeStatement($sql)
+    {
+        $this->bd->exec($sql);
     }
 }
 
