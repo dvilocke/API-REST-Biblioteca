@@ -28,6 +28,7 @@ class AuthServer
                 break;
 
             case 'GET':
+                $this->reviewToken();
                 break;
 
             default:
@@ -61,7 +62,7 @@ class AuthServer
 
             $this->bd = new BD(DNS, USUARIO, PASSWORD);
 
-            $sql = "INSERT INTO `tokens` (`id`, `tokenNumber`) VALUES (NULL, '$token');";
+            $sql = "INSERT INTO `tokens` (`id`, `tokenNumber`, `generatedTime`) VALUES (NULL, '$token', CURRENT_TIMESTAMP);";
 
             $this->bd->executeStatement($sql);
 
@@ -77,6 +78,44 @@ class AuthServer
 
     }
 
+    private function reviewToken()
+    {
+        try
+        {
+            if(!array_key_exists('HTTP_TOKEN', $_SERVER))
+            {
+                http_response_code(400);
+                throw new Exception('missing parameters');
+            }
+            //check in database
+            $bd = new BD(DNS, USUARIO, PASSWORD);
+
+            $sql = "SELECT * FROM `tokens` WHERE tokenNumber = '{$_SERVER['HTTP_TOKEN']}';";
+
+            if($bd->checkTokenExistence($_SERVER['HTTP_TOKEN'], $sql))
+            {
+                echo(json_encode(array(
+                    'response' => true
+                )));
+            }else
+            {
+                //retornamos algo para decir que no
+                echo(json_encode(array(
+                    'response' => false
+                )));
+            }
+
+        }catch (Exception $e)
+        {
+            echo('ERROR' . $e->getMessage());
+            die();
+
+        }catch (PDOException $b)
+        {
+            echo('ERROR' . $b->getMessage());
+            die();
+        }
+    }
 }
 new AuthServer($_SERVER["REQUEST_METHOD"]);
 

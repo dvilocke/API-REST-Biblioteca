@@ -32,6 +32,18 @@ class BD
     {
         $this->bd->exec($sql);
     }
+
+    public function checkTokenExistence($token, $sql) : bool
+    {
+
+        $sth = $this->bd->prepare($sql);
+        $sth->execute();
+        $res = $sth->fetchAll();
+
+        return count($res) > 0;
+
+    }
+
 }
 
 
