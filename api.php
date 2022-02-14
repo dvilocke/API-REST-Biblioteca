@@ -28,7 +28,7 @@ class API
         if($this->checkToken())
         {
             $this->checkInputVariables();
-
+            $this->apiProcess();
         }else
         {
             echo(json_encode(array(
@@ -88,6 +88,29 @@ class API
 
         }
 
+    }
+
+    private function apiProcess()
+    {
+        switch ($this->requestMethod)
+        {
+            case 'GET':
+                break;
+
+            case 'POST':
+                break;
+
+            case 'PUT':
+                break;
+
+            case 'DELETE':
+                break;
+
+            default:
+                echo(json_encode(array(
+                    'response' => 'resource not available'
+                )));
+        }
     }
 
 }
