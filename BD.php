@@ -15,13 +15,11 @@ class BD
 
     public function __construct($dsn, $username, $password)
     {
-        try
-        {
+        try {
             $this->bd = new PDO($dsn, $username, $password);
             $this->bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        }catch (PDOException $e)
-        {
+        } catch (PDOException $e) {
             echo('Error:' . $e->getMessage());
             die();
         }
@@ -33,7 +31,15 @@ class BD
         $this->bd->exec($sql);
     }
 
-    public function checkTokenExistence($token, $sql) : bool
+    public function prepareExecution($sql)
+    {
+        $sth = $this->bd->prepare($sql);
+        $sth->execute();
+        return $sth->fetchAll();
+
+    }
+
+    public function checkTokenExistence($token, $sql): bool
     {
 
         $sth = $this->bd->prepare($sql);
